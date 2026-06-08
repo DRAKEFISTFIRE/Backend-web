@@ -2,10 +2,8 @@ import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,
+  port: 465,
   secure: false,
-
-  // Fuerza IPv4 (evita el problema IPv6 que aparece en tus logs)
   family: 4,
 
   auth: {
@@ -37,29 +35,26 @@ transporter.verify((error) => {
   }
 });
 
+// services/mail.service.js
 export const sendMail = async ({ subject, html }) => {
-  try {
-    const result = await Promise.race([
-      transporter.sendMail({
-        from: `"Portfolio Contact" <${process.env.MAIL_USER}>`,
-        to: process.env.MAIL_TO,
-        subject,
-        html
-      }),
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      from: "Portfolio <onboarding@resend.dev>",  // Domini per defecte de Resend (gratuït)
+      to: [process.env.MAIL_TO],
+      subject,
+      html
+    })
+  });
 
-      new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error("SMTP HARD TIMEOUT")),
-          25000
-        )
-      )
-    ]);
-
-    console.log("✅ EMAIL SENT:", result.messageId);
-
-    return result;
-  } catch (err) {
-    console.error("❌ SEND MAIL ERROR:", err);
-    throw err;
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || "Resend API error");
   }
+
+  return await res.json();
 };
