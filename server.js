@@ -14,6 +14,15 @@ app.use(express.json({
   limit: "5mb"
 }));
 
+app.get("/", (req, res) => {
+  res.json({
+    status: "API running",
+    endpoints: {
+      contact: "/api/contact"
+    }
+  });
+});
+
 app.use("/api/contact", contactRoutes);
 
 app.listen(process.env.PORT, () => {
