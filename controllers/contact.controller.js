@@ -4,7 +4,9 @@ export const sendContactRequest = async (req, res) => {
   try {
     const { service, client, project } = req.body || {};
 
-    // 🔥 VALIDACIÓN DEFENSIVA (evita crashes)
+    console.log("📨 Incoming request");
+    console.log(JSON.stringify(req.body, null, 2));
+
     if (!service || !client || !project) {
       return res.status(400).json({
         success: false,
@@ -60,13 +62,14 @@ export const sendContactRequest = async (req, res) => {
 
         <h2>Configuration</h2>
         <table border="1" cellspacing="0" cellpadding="0" width="100%">
-          ${configurationHtml || ""}
+          ${configurationHtml}
         </table>
 
       </div>
     `;
 
-    // 🔥 TIMEOUT REAL (EVITA HANG EN RENDER)
+    console.log("🚀 About to send email");
+
     await Promise.race([
       sendMail({
         subject: `New ${service} project request`,
@@ -77,13 +80,16 @@ export const sendContactRequest = async (req, res) => {
       )
     ]);
 
+    console.log("✅ Email sent");
+
     return res.status(200).json({
       success: true,
       message: "Email sent successfully"
     });
 
   } catch (error) {
-    console.error("❌ sendContactRequest error:", error);
+    console.error("❌ sendContactRequest error:");
+    console.error(error);
 
     return res.status(500).json({
       success: false,
