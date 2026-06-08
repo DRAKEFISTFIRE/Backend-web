@@ -8,12 +8,20 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
-
-app.use(express.json({
-  limit: "5mb"
+// 🔥 CORS CORRECTO PARA FRONTEND GITHUB PAGES
+app.use(cors({
+  origin: [
+    "https://drakefistfire.github.io",
+    "http://localhost:3000",
+    "http://127.0.0.1:5500"
+  ],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
 }));
 
+app.use(express.json({ limit: "5mb" }));
+
+// health check
 app.get("/", (req, res) => {
   res.json({
     status: "API running",
@@ -25,8 +33,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/contact", contactRoutes);
 
-app.listen(process.env.PORT, () => {
-  console.log(
-    `Server running on port ${process.env.PORT}`
-  );
+const PORT = process.env.PORT || 10000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
