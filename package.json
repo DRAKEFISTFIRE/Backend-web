@@ -1,0 +1,26 @@
+{
+  "name": "backend-web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DRAKEFISTFIRE/Backend-web.git"
+  },
+  "author": "Aniol",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DRAKEFISTFIRE/Backend-web/issues"
+  },
+  "homepage": "https://github.com/DRAKEFISTFIRE/Backend-web#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "nodemailer": "^8.0.10",
+    "nodemon": "^3.1.14"
+  }
+}
